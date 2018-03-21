@@ -14,6 +14,9 @@ sys.stderr.write('Using Django version {0} from {1}\n'.format(
 )
 
 if not settings.configured:
+    module_root = path.dirname(path.realpath(__file__))
+    sys.path.insert(0, path.join(module_root, 'tests'))
+
     template_settings = dict(
         TEMPLATES=[
             {
@@ -53,6 +56,7 @@ if not settings.configured:
             'django.contrib.admin',
             'django.contrib.sessions',
             'sanitized_dump',
+            'testapp'
         ),
         MIDDLEWARE_CLASSES=MIDDLEWARE,
         MIDDLEWARE=MIDDLEWARE,
