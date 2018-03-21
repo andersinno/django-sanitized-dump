@@ -37,6 +37,13 @@ class TestConfiguration(object):
             assert config.config
 
     @patch(builtins_open, new_callable=MockOpen)
+    def test_create_from_file_path(self, mocked_open):
+        Configuration().write_configuration_file()
+        with open(Configuration().standard_file_path, 'r') as conf_file:
+            config = Configuration.from_file_path(conf_file.name)
+            assert config.config
+
+    @patch(builtins_open, new_callable=MockOpen)
     def test_write_empty_configuration_file(self, mocked_open):
         Configuration().write_configuration_file()
         with open(Configuration().standard_file_path, 'r') as conf_file:
