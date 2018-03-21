@@ -23,6 +23,9 @@ class Configuration:
     def __init__(self, config=None):
         self.config = config if config else Configuration._get_initial_structure()
 
+    def __str__(self):
+        return 'Configuration'
+
     @classmethod
     def from_models(cls):
         configuration = Configuration()
