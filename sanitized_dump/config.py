@@ -66,6 +66,6 @@ class Configuration:
 
         self.config['strategy'][model_table_name] = field_name_strategy
 
-    def write_configuration_file(self, file_path):
+    def write_configuration_file(self, file_path=standard_file_path):
         with open(file_path, "w") as config_file:
             yaml.dump(self.config, config_file, default_flow_style=False)
