@@ -1,6 +1,3 @@
-import os
-
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
 from sanitized_dump.config import Configuration
@@ -18,4 +15,3 @@ class Command(BaseCommand):
             self.stdout.write('Created {}'.format(filepath))
         except OSError:
             self.stderr.write('Failed creating {}'.format(filepath))
-

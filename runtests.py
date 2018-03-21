@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import sys
-import django
-import pytest
-import py
-from django.conf import settings, global_settings as default_settings
-from django.core.management import execute_from_command_line
 from os import path
+
+import django
+import py
+from django.conf import settings
 
 # Give feedback on used versions
 sys.stderr.write('Using Python version {0} from {1}\n'.format(sys.version[:5], sys.executable))
@@ -16,7 +15,7 @@ sys.stderr.write('Using Django version {0} from {1}\n'.format(
 
 if not settings.configured:
     template_settings = dict(
-        TEMPLATES = [
+        TEMPLATES=[
             {
                 'BACKEND': 'django.template.backends.django.DjangoTemplates',
                 'DIRS': [],
@@ -40,15 +39,15 @@ if not settings.configured:
     ]
 
     settings.configure(
-        BASE_DIR = path.dirname(path.dirname(path.abspath(__file__))),
-        DEBUG = False,
-        DATABASES = {
+        BASE_DIR=path.dirname(path.dirname(path.abspath(__file__))),
+        DEBUG=False,
+        DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME': ':memory:'
             }
         },
-        INSTALLED_APPS = (
+        INSTALLED_APPS=(
             'django.contrib.auth',
             'django.contrib.contenttypes',
             'django.contrib.admin',
@@ -57,7 +56,7 @@ if not settings.configured:
         ),
         MIDDLEWARE_CLASSES=MIDDLEWARE,
         MIDDLEWARE=MIDDLEWARE,
-        ROOT_URLCONF = [],
+        ROOT_URLCONF=[],
         **template_settings
     )
 
@@ -65,12 +64,14 @@ DEFAULT_TEST_APPS = [
     'tests',
 ]
 
+
 def runtests():
     other_args = list(filter(lambda arg: arg.startswith('-'), sys.argv[1:]))
     test_apps = list(filter(lambda arg: not arg.startswith('-'), sys.argv[1:])) or DEFAULT_TEST_APPS
 
     argv = sys.argv[:1] + other_args + test_apps
     py.test.cmdline.main(argv)
+
 
 if __name__ == '__main__':
     runtests()

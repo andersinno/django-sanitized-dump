@@ -1,15 +1,9 @@
 import os
-import yaml
 
+import yaml
 from django.conf import settings
 
-from .utils.models import (
-    get_model_table_name,
-    get_model_field_names,
-    get_models,
-    validate_all_model_fields_in_config
-)
-
+from .utils.models import get_model_field_names, get_model_table_name, get_models, validate_all_model_fields_in_config
 
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
 BASE_DIR = getattr(settings, 'BASE_DIR', None)
@@ -56,10 +50,10 @@ class Configuration:
 
     def _get_initial_structure():
         return {
-        	"config": {
-        		"addons": [],
-        	},
-        	"strategy": {},
+            "config": {
+                "addons": [],
+            },
+            "strategy": {},
         }
 
     def add_empty_model_strategy(self, model):

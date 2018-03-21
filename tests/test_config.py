@@ -3,9 +3,9 @@ import yaml
 from mock import patch
 from mock_open import MockOpen
 
+from sanitized_dump.config import Configuration
 from sanitized_dump.utils import models
 from sanitized_dump.utils.compat import builtins_open
-from sanitized_dump.config import Configuration
 
 
 def assert_all_models_in_conf(config):

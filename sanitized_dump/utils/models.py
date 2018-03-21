@@ -1,16 +1,17 @@
 from itertools import chain
 
-import django
-
 try:
     from django.apps import apps
+
     get_models = apps.get_models
 except ImportError:
     # Django < 1.7
     from django.db.models import get_models
 
+
 def get_model_table_name(model):
     return model._meta.db_table
+
 
 def get_model_field_names(model):
     """
@@ -32,6 +33,7 @@ def get_model_field_names(model):
         # GenericForeignKey from the results.
         if not (field.many_to_one and field.related_model is None)
     )))
+
 
 def get_model_table_names():
     models = get_models()
