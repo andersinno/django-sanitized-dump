@@ -40,6 +40,7 @@ if not settings.configured:
     ]
 
     settings.configure(
+        BASE_DIR = path.dirname(path.dirname(path.abspath(__file__))),
         DEBUG = False,
         DATABASES = {
             'default': {

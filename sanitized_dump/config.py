@@ -1,4 +1,7 @@
+import os
 import yaml
+
+from django.conf import settings
 
 from .utils.models import (
     get_model_table_name,
@@ -6,7 +9,16 @@ from .utils.models import (
     get_models
 )
 
+
+# TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
+BASE_DIR = getattr(settings, 'BASE_DIR', None)
+assert BASE_DIR, 'Missing BASE_DIR in settings. Add it and retry.'
+
+
 class Configuration:
+    standard_file_name = '.sanitizerconfig'
+    standard_file_path = os.path.join(BASE_DIR, standard_file_name)
+
     def __init__(self, config=None):
         self.config = config if config else Configuration._get_initial_structure()
 
