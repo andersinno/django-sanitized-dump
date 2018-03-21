@@ -48,7 +48,8 @@ class Configuration:
     def validate(self):
         assert all(key in self.config for key in ['config', 'strategy'])
 
-    def _get_initial_structure():
+    @classmethod
+    def _get_initial_structure(cls):
         return {
             "config": {
                 "addons": [],
