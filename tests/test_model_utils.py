@@ -11,4 +11,4 @@ class TestModelUtils():
         assert True
 
     def test_get_model_field_names(self):
-        assert models.get_model_field_names(Name) == ['id', 'name']
+        assert set(models.get_model_field_names(Name)) == set(['id', 'name'])
