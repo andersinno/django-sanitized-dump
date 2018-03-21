@@ -48,6 +48,9 @@ class Configuration:
     def has_all_model_fields(self):
         return validate_all_model_fields_in_config(self.config)
 
+    def validate(self):
+        assert all(key in self.config for key in ['config', 'strategy'])
+
     def _get_initial_structure():
         return {
         	"config": {
