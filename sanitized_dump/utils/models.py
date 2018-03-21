@@ -32,3 +32,7 @@ def get_model_field_names(model):
         # GenericForeignKey from the results.
         if not (field.many_to_one and field.related_model is None)
     )))
+
+def get_model_table_names():
+    models = get_models()
+    return [get_model_table_name(model) for model in models]
