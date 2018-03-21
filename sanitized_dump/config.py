@@ -6,7 +6,8 @@ from django.conf import settings
 from .utils.models import (
     get_model_table_name,
     get_model_field_names,
-    get_models
+    get_models,
+    validate_all_model_fields_in_config
 )
 
 
@@ -31,6 +32,10 @@ class Configuration:
             configuration.add_empty_model_strategy(model)
 
         return configuration
+
+    @property
+    def has_all_model_fields(self):
+        return validate_all_model_fields_in_config(self.config)
 
     def _get_initial_structure():
         return {
