@@ -41,6 +41,10 @@ class Configuration(object):
         with open(file_path, "r") as config_file:
             return cls.from_file(config_file)
 
+    @classmethod
+    def from_standard_config_file(cls):
+        return cls.from_file_path(cls.standard_file_path)
+
     @property
     def has_all_model_fields(self):
         return validate_all_model_fields_in_config(self.config)
