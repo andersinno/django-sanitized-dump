@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytest
 import yaml
 from mock import patch
 from mock_open import MockOpen
@@ -6,6 +7,8 @@ from mock_open import MockOpen
 from sanitized_dump.config import Configuration
 from sanitized_dump.utils import models
 from sanitized_dump.utils.compat import builtins_open
+
+from testapp.models import Secret, Name
 
 
 def assert_config_sections(config):
@@ -47,25 +50,29 @@ class TestConfiguration(object):
         config.write_configuration_file()
         with open(Configuration().standard_file_path, 'r') as conf_file:
             conf = Configuration(yaml.load(conf_file))
-            conf.validate_all_model_fields_in_config()
+            assert conf.has_all_model_fields
 
     def test_empty_config_is_not_valid(self):
         Configuration({}).validate()
 
-    def test_config_check_with_missing_models(self):
+    @patch('sanitized_dump.config.get_models', return_value=[Name])
+    def test_diff_with_missing_model(self, mocked_get_models):
         config = Configuration({
             'config': {},
-            'strategy': {
-                'bad_mode_name': {},
-            }
+            'strategy': {}
         })
-        assert config.validate_all_model_fields_in_config() is False
+        assert config.diff_with_models == {
+            'testapp_name': set(['id', 'name'])
+        }
 
-    def test_config_check_with_missing_fields(self):
+    @patch('sanitized_dump.config.get_models', return_value=[Secret])
+    def test_diff_with_missing_fields(self, mocked_get_models):
         config = Configuration({
             'config': {},
             'strategy': {
                 'testapp_secret': {},
             }
         })
-        assert config.validate_all_model_fields_in_config() is False
+        assert config.diff_with_models == {
+            'testapp_secret': set(['id', 'name', 'text'])
+        }

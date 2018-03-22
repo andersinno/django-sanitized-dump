@@ -1,6 +1,7 @@
 import os
-
 import yaml
+from collections import defaultdict
+
 from django.conf import settings
 
 from .utils.models import (
@@ -57,6 +58,23 @@ class Configuration(object):
     @property
     def strategy(self):
         return self.config.get('strategy', {})
+
+    @property
+    def diff_with_models(self):
+        """
+        Return a dict stating the differences between current state of models
+        and the configuration itself.
+        TODO: Detect fields that are in conf, but not in models
+        """
+        missing_from_conf = defaultdict(set)
+
+        for model in get_models():
+            table_name = get_model_table_name(model)
+            model_strategy = self.strategy.get(table_name)
+            for model_field in get_model_field_names(model):
+                if not model_strategy or model_field not in model_strategy.keys():
+                    missing_from_conf[table_name].add(model_field)
+        return missing_from_conf
 
     @strategy.setter
     def strategy(self, value):
