@@ -10,7 +10,7 @@ BASE_DIR = getattr(settings, 'BASE_DIR', None)
 assert BASE_DIR, 'Missing BASE_DIR in settings. Add it and retry.'
 
 
-class Configuration:
+class Configuration(object):
     standard_file_name = '.sanitizerconfig'
     standard_file_path = os.path.join(BASE_DIR, standard_file_name)
 
@@ -44,6 +44,18 @@ class Configuration:
     @property
     def has_all_model_fields(self):
         return validate_all_model_fields_in_config(self.config)
+
+    @property
+    def strategy(self):
+        return self.config.get('strategy', {})
+
+    @strategy.setter
+    def strategy(self, value):
+        if not isinstance(value, (dict)):
+            raise ValueError(
+                'Invalid strategy: {} provided, should be dict.'.format(type(value))
+            )
+        return self.config.set('strategy', value)
 
     def validate(self):
         assert all(key in self.config for key in ['config', 'strategy'])
