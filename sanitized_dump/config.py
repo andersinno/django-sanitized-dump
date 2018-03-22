@@ -52,8 +52,8 @@ class Configuration(object):
         return cls.from_file_path(cls.standard_file_path)
 
     @property
-    def has_all_model_fields(self):
-        return self.validate_all_model_fields_in_config()
+    def in_sync_with_models(self):
+        return not bool(self.diff_with_models)
 
     @property
     def strategy(self):

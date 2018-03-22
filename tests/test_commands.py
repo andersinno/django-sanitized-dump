@@ -11,4 +11,4 @@ def test_init_sanitizer(mocked_open):
     call_command('init_sanitizer')
     with open(Configuration.standard_file_path) as conf_file:
         conf = Configuration.from_file(conf_file)
-        assert conf.has_all_model_fields
+        assert conf.in_sync_with_models

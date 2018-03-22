@@ -21,7 +21,7 @@ class TestConfiguration(object):
         config = configuration_instance.config
 
         assert_config_sections(config)
-        configuration_instance.validate_all_model_fields_in_config()
+        assert configuration_instance.in_sync_with_models
 
     @patch(builtins_open, new_callable=MockOpen)
     def test_create_from_file(self, mocked_open):
@@ -50,7 +50,7 @@ class TestConfiguration(object):
         config.write_configuration_file()
         with open(Configuration().standard_file_path, 'r') as conf_file:
             conf = Configuration(yaml.load(conf_file))
-            assert conf.has_all_model_fields
+            assert conf.in_sync_with_models
 
     def test_empty_config_is_not_valid(self):
         Configuration({}).validate()
