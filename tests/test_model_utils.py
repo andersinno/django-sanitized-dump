@@ -26,22 +26,3 @@ class TestModelUtils():
 
     def test_get_model_field_names(self):
         assert set(models.get_model_field_names(Name)) == set(['id', 'name'])
-
-    def test_config_validation_empty_config(self):
-        assert models.validate_all_model_fields_in_config({}) is False
-
-    def test_config_validation_missing_models(self):
-        config = {
-            'strategy': {
-                'bad_mode_name': {},
-            }
-        }
-        assert models.validate_all_model_fields_in_config(config) is False
-
-    def test_config_validation_missing_fields(self):
-        config = {
-            'strategy': {
-                'testapp_secret': {},
-            }
-        }
-        assert models.validate_all_model_fields_in_config(config) is False

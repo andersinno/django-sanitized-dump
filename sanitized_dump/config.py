@@ -3,7 +3,12 @@ import os
 import yaml
 from django.conf import settings
 
-from .utils.models import get_model_field_names, get_model_table_name, get_models, validate_all_model_fields_in_config
+from .utils.models import (
+    get_model_field_names,
+    get_model_table_map,
+    get_model_table_name,
+    get_models,
+)
 
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
 BASE_DIR = getattr(settings, 'BASE_DIR', None)
@@ -47,7 +52,7 @@ class Configuration(object):
 
     @property
     def has_all_model_fields(self):
-        return validate_all_model_fields_in_config(self.config)
+        return self.validate_all_model_fields_in_config()
 
     @property
     def strategy(self):
@@ -63,6 +68,20 @@ class Configuration(object):
 
     def validate(self):
         assert all(key in self.config for key in ['config', 'strategy'])
+
+    def validate_all_model_fields_in_config(self):
+        self.validate()
+        model_table_map = get_model_table_map()
+        model_table_names = model_table_map.keys()
+        for model_table_name, fields in self.strategy.items():
+            if model_table_name not in model_table_names:
+                return False
+            model = model_table_map[model_table_name]
+            model_field_names = get_model_field_names(model)
+            if set(fields.keys()) != set(model_field_names):
+                return False
+        return True
+
 
     @classmethod
     def _get_initial_structure(cls):

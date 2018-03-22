@@ -8,17 +8,8 @@ from sanitized_dump.utils import models
 from sanitized_dump.utils.compat import builtins_open
 
 
-def assert_all_models_in_conf(config):
-    model_table_names = models.get_model_table_names()
-    assert all(model_name in config['strategy'] for model_name in model_table_names)
-
-
 def assert_config_sections(config):
     assert all(key in config for key in ['config', 'strategy'])
-
-
-def assert_all_model_fields_in_conf(config):
-    assert models.validate_all_model_fields_in_config(config)
 
 
 class TestConfiguration(object):
@@ -27,7 +18,7 @@ class TestConfiguration(object):
         config = configuration_instance.config
 
         assert_config_sections(config)
-        assert_all_model_fields_in_conf(config)
+        configuration_instance.validate_all_model_fields_in_config()
 
     @patch(builtins_open, new_callable=MockOpen)
     def test_create_from_file(self, mocked_open):
@@ -55,5 +46,26 @@ class TestConfiguration(object):
         config = Configuration.from_models()
         config.write_configuration_file()
         with open(Configuration().standard_file_path, 'r') as conf_file:
-            conf = yaml.load(conf_file)
-            assert_all_model_fields_in_conf(conf)
+            conf = Configuration(yaml.load(conf_file))
+            conf.validate_all_model_fields_in_config()
+
+    def test_empty_config_is_not_valid(self):
+        Configuration({}).validate()
+
+    def test_config_check_with_missing_models(self):
+        config = Configuration({
+            'config': {},
+            'strategy': {
+                'bad_mode_name': {},
+            }
+        })
+        assert config.validate_all_model_fields_in_config() is False
+
+    def test_config_check_with_missing_fields(self):
+        config = Configuration({
+            'config': {},
+            'strategy': {
+                'testapp_secret': {},
+            }
+        })
+        assert config.validate_all_model_fields_in_config() is False
