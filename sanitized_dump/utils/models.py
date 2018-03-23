@@ -2,7 +2,6 @@ from itertools import chain
 
 try:
     from django.apps import apps
-
     get_models = apps.get_models
 except ImportError:
     # Django < 1.7
@@ -45,19 +44,6 @@ def get_model_table_map():
     return {get_model_table_name(model): model for model in models}
 
 
-def validate_all_model_fields_in_config(config):
-    strategy = config.get('strategy', None)
-    if not strategy:
-        return False
-
-    model_table_map = get_model_table_map()
-    model_table_names = model_table_map.keys()
-    for model_table_name, fields in strategy.items():
-        if model_table_name not in model_table_names:
-            return False
-        model = model_table_map[model_table_name]
-        model_field_names = get_model_field_names(model)
-        if set(fields.keys()) != set(model_field_names):
-            return False
-
-    return True
+def get_model_table_to_model_name_map():
+    models = get_models()
+    return {get_model_table_name(model): model.__name__ for model in models}

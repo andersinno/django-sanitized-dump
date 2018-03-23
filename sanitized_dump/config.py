@@ -1,16 +1,21 @@
 import os
+from collections import defaultdict
 
 import yaml
 from django.conf import settings
 
-from .utils.models import get_model_field_names, get_model_table_name, get_models, validate_all_model_fields_in_config
+from .utils.models import (
+    get_model_field_names,
+    get_model_table_name,
+    get_models,
+)
 
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
 BASE_DIR = getattr(settings, 'BASE_DIR', None)
 assert BASE_DIR, 'Missing BASE_DIR in settings. Add it and retry.'
 
 
-class Configuration:
+class Configuration(object):
     standard_file_name = '.sanitizerconfig'
     standard_file_path = os.path.join(BASE_DIR, standard_file_name)
 
@@ -41,9 +46,42 @@ class Configuration:
         with open(file_path, "r") as config_file:
             return cls.from_file(config_file)
 
+    @classmethod
+    def from_standard_config_file(cls):
+        return cls.from_file_path(cls.standard_file_path)
+
     @property
-    def has_all_model_fields(self):
-        return validate_all_model_fields_in_config(self.config)
+    def in_sync_with_models(self):
+        return not bool(self.diff_with_models)
+
+    @property
+    def strategy(self):
+        return self.config.get('strategy', {})
+
+    @property
+    def diff_with_models(self):
+        """
+        Return a dict stating the differences between current state of models
+        and the configuration itself.
+        TODO: Detect fields that are in conf, but not in models
+        """
+        missing_from_conf = defaultdict(set)
+
+        for model in get_models():
+            table_name = get_model_table_name(model)
+            model_strategy = self.strategy.get(table_name)
+            for model_field in get_model_field_names(model):
+                if not model_strategy or model_field not in model_strategy.keys():
+                    missing_from_conf[table_name].add(model_field)
+        return missing_from_conf
+
+    @strategy.setter
+    def strategy(self, value):
+        if not isinstance(value, (dict)):
+            raise ValueError(
+                'Invalid strategy: {} provided, should be dict.'.format(type(value))
+            )
+        return self.config.set('strategy', value)
 
     def validate(self):
         assert all(key in self.config for key in ['config', 'strategy'])
