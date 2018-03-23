@@ -1,5 +1,7 @@
 from itertools import chain
 
+import django
+
 try:
     from django.apps import apps
     get_models = apps.get_models
@@ -25,6 +27,9 @@ def get_model_field_names(model):
 
     [1] https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
     """
+    if django.VERSION < (1, 8, 0):
+        return model._meta.get_all_field_names()
+
     return list(set(chain.from_iterable(
         (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
         for field in model._meta.get_fields()

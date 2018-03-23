@@ -16,6 +16,7 @@ sys.stderr.write('Using Django version {0} from {1}\n'.format(
 if not settings.configured:
     module_root = path.dirname(path.realpath(__file__))
     sys.path.insert(0, path.join(module_root, 'tests'))
+    sys.path.insert(0, module_root)
 
     template_settings = dict(
         TEMPLATES=[
@@ -42,7 +43,7 @@ if not settings.configured:
     ]
 
     settings.configure(
-        BASE_DIR=path.dirname(path.dirname(path.abspath(__file__))),
+        BASE_DIR=module_root,
         DEBUG=False,
         DATABASES={
             'default': {
@@ -74,7 +75,7 @@ def runtests():
     test_apps = list(filter(lambda arg: not arg.startswith('-'), sys.argv[1:])) or DEFAULT_TEST_APPS
 
     argv = sys.argv[:1] + other_args + test_apps
-    py.test.cmdline.main(argv)
+    sys.exit(py.test.cmdline.main(argv))
 
 
 if __name__ == '__main__':

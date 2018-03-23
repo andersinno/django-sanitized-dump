@@ -1,10 +1,9 @@
-from django.core.management.base import BaseCommand
-
 from sanitized_dump.config import Configuration
+from sanitized_dump.management.base_commands import DBReadonlyCommand
 from sanitized_dump.utils.models import get_model_table_to_model_name_map
 
 
-class Command(BaseCommand):
+class Command(DBReadonlyCommand):
     help = 'Check .sanitizerconfig is up to date with models'
 
     def handle(self, *args, **options):

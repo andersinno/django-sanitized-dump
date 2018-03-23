@@ -85,6 +85,9 @@ class Configuration(object):
 
     def validate(self):
         assert all(key in self.config for key in ['config', 'strategy'])
+        assert isinstance(self.config['config'], dict)
+        assert isinstance(self.config['strategy'], dict)
+        assert isinstance(self.config['config'].get('addons'), list)
 
     @classmethod
     def _get_initial_structure(cls):
