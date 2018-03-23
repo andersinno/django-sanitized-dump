@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand
+from sanitized_dump.management.base_commands import DBReadonlyCommand
 
 
-class Command(BaseCommand):
+class Command(DBReadonlyCommand):
     help = 'Create sanitized database dump'
 
     def handle(self, *args, **options):
