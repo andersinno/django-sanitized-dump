@@ -6,7 +6,6 @@ from django.conf import settings
 
 from .utils.models import (
     get_model_field_names,
-    get_model_table_map,
     get_model_table_name,
     get_models,
 )
