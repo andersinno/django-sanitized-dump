@@ -75,7 +75,7 @@ def runtests():
     test_apps = list(filter(lambda arg: not arg.startswith('-'), sys.argv[1:])) or DEFAULT_TEST_APPS
 
     argv = sys.argv[:1] + other_args + test_apps
-    py.test.cmdline.main(argv)
+    sys.exit(py.test.cmdline.main(argv))
 
 
 if __name__ == '__main__':
