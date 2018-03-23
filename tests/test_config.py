@@ -10,6 +10,9 @@ from testapp.models import Name, Secret
 
 def assert_config_sections(config):
     assert all(key in config for key in ['config', 'strategy'])
+    assert isinstance(config['config'], dict)
+    assert isinstance(config['strategy'], dict)
+    assert isinstance(config['config'].get('addons'), list)
 
 
 class TestConfiguration(object):
@@ -40,6 +43,7 @@ class TestConfiguration(object):
         with open(Configuration().standard_file_path, 'r') as conf_file:
             conf = yaml.load(conf_file)
             assert conf
+            assert_config_sections(conf)
 
     @patch(builtins_open, new_callable=MockOpen)
     def test_write_full_configuration_file(self, mocked_open):
