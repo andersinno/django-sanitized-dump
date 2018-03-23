@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from testapp.models import Name
-
 from sanitized_dump.utils import models
+from testapp.models import Name
 
 
 class TestModelUtils():

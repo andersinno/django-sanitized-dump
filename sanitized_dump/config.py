@@ -1,7 +1,7 @@
 import os
-import yaml
 from collections import defaultdict
 
+import yaml
 from django.conf import settings
 
 from .utils.models import (
