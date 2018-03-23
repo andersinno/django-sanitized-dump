@@ -2,7 +2,6 @@ from itertools import chain
 
 try:
     from django.apps import apps
-
     get_models = apps.get_models
 except ImportError:
     # Django < 1.7
@@ -43,3 +42,8 @@ def get_model_table_names():
 def get_model_table_map():
     models = get_models()
     return {get_model_table_name(model): model for model in models}
+
+
+def get_model_table_to_model_name_map():
+    models = get_models()
+    return {get_model_table_name(model): model.__name__ for model in models}
