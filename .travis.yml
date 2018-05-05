@@ -15,3 +15,7 @@ install:
   - pip install -U pip setuptools
 
 script: tox -v
+
+after_success:
+    - pip install codecov
+    - codecov
