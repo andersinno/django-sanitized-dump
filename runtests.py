@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-from os import path
+from os import path, environ
 
 import django
 import py
@@ -17,53 +17,7 @@ if not settings.configured:
     module_root = path.dirname(path.realpath(__file__))
     sys.path.insert(0, path.join(module_root, 'tests'))
     sys.path.insert(0, module_root)
-
-    template_settings = dict(
-        TEMPLATES=[
-            {
-                'BACKEND': 'django.template.backends.django.DjangoTemplates',
-                'DIRS': [],
-                'APP_DIRS': True,
-                'OPTIONS': {
-                    'context_processors': [
-                        'django.template.context_processors.debug',
-                        'django.template.context_processors.request',
-                        'django.contrib.auth.context_processors.auth',
-                        'django.contrib.messages.context_processors.messages',
-                    ],
-                },
-            },
-        ]
-    )
-
-    MIDDLEWARE = [
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-    ]
-
-    settings.configure(
-        BASE_DIR=module_root,
-        DEBUG=False,
-        DATABASES={
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': ':memory:'
-            }
-        },
-        INSTALLED_APPS=(
-            'django.contrib.auth',
-            'django.contrib.contenttypes',
-            'django.contrib.admin',
-            'django.contrib.sessions',
-            'sanitized_dump',
-            'testapp'
-        ),
-        MIDDLEWARE_CLASSES=MIDDLEWARE,
-        MIDDLEWARE=MIDDLEWARE,
-        ROOT_URLCONF=[],
-        **template_settings
-    )
+    environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 DEFAULT_TEST_APPS = [
     'tests',
