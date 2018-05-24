@@ -1,7 +1,8 @@
-from sanitized_dump.management.base_commands import DBReadonlyCommand
-from subprocess import call
+import subprocess
+
 from django.conf import settings
 
+from sanitized_dump.management.base_commands import DBReadonlyCommand
 from sanitized_dump.utils.db import db_setting_to_db_string
 
 
@@ -13,4 +14,11 @@ class Command(DBReadonlyCommand):
             self.stderr.write('Creating sanitized dump...')
 
         database_string = db_setting_to_db_string(settings.DATABASES)
-        call(["database-sanitizer", '-c', '.sanitizerconfig', database_string])
+        process = subprocess.Popen(
+            ["database-sanitizer", '-c', '.sanitizerconfig', database_string]
+        )
+        process.communicate()
+        if process.returncode:
+            raise SystemExit(
+                'Database sanitizing failed. (Exit status: {})'.format(
+                    process.returncode))
