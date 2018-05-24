@@ -1,4 +1,4 @@
-DATABASE_TYPES = ['mysql', 'postgres']
+DATABASE_TYPES = ['mysql', 'postgres', 'postgis']
 
 
 def db_setting_to_db_string(db_settings):
