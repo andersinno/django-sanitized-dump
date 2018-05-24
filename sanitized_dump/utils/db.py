@@ -1,9 +1,4 @@
 DATABASE_TYPES = ['mysql', 'postgres']
-DATABASE_STRING_TEMPLATE = '{type}://{username}:{password}@{host}:{port}/{db}'
-DEFAULT_DATABASE_PORTS = {
-    'mysql': '3306',
-    'postgres': '5432',
-}
 
 
 def db_setting_to_db_string(db_settings):
@@ -19,7 +14,7 @@ def db_setting_to_db_string(db_settings):
     db_host = default_db.get('HOST')
     db_port = default_db.get('PORT')
 
-    if not (engine and db_name and db_user and db_host):
+    if not engine or not db_name:
         raise ValueError("Database configuration not supported")
 
     database_type = None
@@ -31,10 +26,12 @@ def db_setting_to_db_string(db_settings):
     if not database_type:
         raise ValueError('Database type "{}" is not supported'.format(engine))
 
-    # Use default port if no port is set
-    db_port = db_port if db_port else DEFAULT_DATABASE_PORTS[database_type]
+    login_part = '{username}:{password}@' if (db_user or db_password) else ''
+    port_part = ':{port}' if db_port else ''
+    database_string_template = (
+        '{type}://' + login_part + '{host}' + port_part + '/{db}')
 
-    return DATABASE_STRING_TEMPLATE.format(
+    return database_string_template.format(
         type=database_type,
         username=db_user,
         password=db_password,
