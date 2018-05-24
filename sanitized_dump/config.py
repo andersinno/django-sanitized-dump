@@ -6,7 +6,6 @@ from django.conf import settings
 
 from .utils.models import get_db_tables_and_columns_of_model, get_models
 
-
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
 BASE_DIR = getattr(settings, 'BASE_DIR', None)
 assert BASE_DIR, 'Missing BASE_DIR in settings. Add it and retry.'

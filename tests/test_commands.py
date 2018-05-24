@@ -1,8 +1,7 @@
-from six import StringIO
-
 from django.core.management import call_command
 from mock import patch
 from mock_open import MockOpen
+from six import StringIO
 
 from sanitized_dump.config import Configuration
 from sanitized_dump.utils.compat import builtins_open
