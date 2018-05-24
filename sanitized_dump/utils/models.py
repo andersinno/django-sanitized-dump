@@ -1,7 +1,3 @@
-from itertools import chain
-
-import django
-
 try:
     from django.apps import apps
     get_models = apps.get_models
@@ -10,45 +6,41 @@ except ImportError:
     from django.db.models import get_models
 
 
-def get_model_table_name(model):
+def get_db_tables_and_columns_of_model(model):
+    all_models = [model] + _get_m2m_through_models_of_model(model)
+    return {
+        _get_table_name(item): _get_columns(item._meta.local_fields)
+        for item in all_models
+    }
+
+
+def _get_m2m_through_models_of_model(model):
+    return [
+        _get_remote_field(field).through
+        for field in model._meta.local_many_to_many
+        if _get_remote_field(field).through._meta.auto_created
+    ]
+
+
+def _get_remote_field(field):
+    if hasattr(field, 'remote_field'):  # Django >= 1.9
+        return field.remote_field
+    return field.rel  # Django <= 1.8
+
+
+def _get_table_name(model):
     return model._meta.db_table
 
 
-def get_model_field_names(model):
-    """
-    Get all fields of a models
-
-    In Django 1.10 the function get_all_field_names() was
-    removed and can no longer be used. The Django documentation [1]
-    suggests two replacement options of which this is the
-    100% backwards compatible version. A simpler solution would be
-    `[f.name for f in model._meta.get_fields()]`. But we try to keep
-    backward compatibility as well as possible for now.
-
-    [1] https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
-    """
-    if django.VERSION < (1, 8, 0):
-        return model._meta.get_all_field_names()
-
-    return list(set(chain.from_iterable(
-        (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
-        for field in model._meta.get_fields()
-        # For complete backwards compatibility, you may want to exclude
-        # GenericForeignKey from the results.
-        if not (field.many_to_one and field.related_model is None)
-    )))
-
-
-def get_model_table_names():
-    models = get_models()
-    return [get_model_table_name(model) for model in models]
-
-
-def get_model_table_map():
-    models = get_models()
-    return {get_model_table_name(model): model for model in models}
+def _get_columns(fields):
+    return [field.column for field in fields if field.column]
 
 
 def get_model_table_to_model_name_map():
     models = get_models()
-    return {get_model_table_name(model): model.__name__ for model in models}
+    result = {}
+    for original_model in models:
+        m2m_models = _get_m2m_through_models_of_model(original_model)
+        for model in [original_model] + m2m_models:
+            result[_get_table_name(model)] = model.__name__
+    return result

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-from os import path, environ
+from os import environ, path
 
 import django
 import py

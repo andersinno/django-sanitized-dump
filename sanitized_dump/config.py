@@ -4,11 +4,7 @@ from collections import defaultdict
 import yaml
 from django.conf import settings
 
-from .utils.models import (
-    get_model_field_names,
-    get_model_table_name,
-    get_models,
-)
+from .utils.models import get_db_tables_and_columns_of_model, get_models
 
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
 BASE_DIR = getattr(settings, 'BASE_DIR', None)
@@ -68,11 +64,12 @@ class Configuration(object):
         missing_from_conf = defaultdict(set)
 
         for model in get_models():
-            table_name = get_model_table_name(model)
-            model_strategy = self.strategy.get(table_name)
-            for model_field in get_model_field_names(model):
-                if not model_strategy or model_field not in model_strategy.keys():
-                    missing_from_conf[table_name].add(model_field)
+            db_tables_and_columns = get_db_tables_and_columns_of_model(model)
+            for (table_name, columns) in db_tables_and_columns.items():
+                model_strategy = self.strategy.get(table_name)
+                for column in columns:
+                    if not model_strategy or column not in model_strategy:
+                        missing_from_conf[table_name].add(column)
         return missing_from_conf
 
     @strategy.setter
@@ -99,14 +96,9 @@ class Configuration(object):
         }
 
     def add_empty_model_strategy(self, model):
-        model_table_name = get_model_table_name(model)
-        model_field_names = get_model_field_names(model)
-
-        field_name_strategy = {
-            field_name: None for field_name in model_field_names
-        }
-
-        self.config['strategy'][model_table_name] = field_name_strategy
+        db_tables_and_columns = get_db_tables_and_columns_of_model(model)
+        for (table, columns) in db_tables_and_columns.items():
+            self.config['strategy'][table] = dict.fromkeys(columns)
 
     def write_configuration_file(self, file_path=standard_file_path):
         with open(file_path, "w") as config_file:
