@@ -1,5 +1,5 @@
 # django-sanitized-dump
-Sanitized sensitive information from your database dumps 💩
+Sanitize sensitive information from your database dumps 💩
 
 
 # DB Sanitization
@@ -11,7 +11,7 @@ Sanitized sensitive information from your database dumps 💩
 ```yaml
 config:
  addons:
-   - "ai-senitizers"
+   - "ai-sanitizers"
    - "some-other-lib"
 strategy:
  user:
@@ -33,14 +33,14 @@ strategy:
 ```python
 # /sanitizers/name.py
 def sanitize_first_name(value):
-	return faker.first_name()
+    return faker.first_name()
 
 def sanitize_last_name(value):
-	return faker.last_name()
+    return faker.last_name()
 
 # /sanitizers/education.py
-def sanitize_field(value):""
-	return "Some field"
+def sanitize_field(value):
+    return "Some field"
 
 def sanitize_schoo(value):
     return "My school"
@@ -52,7 +52,6 @@ def sanitize_schoo(value):
 
 Check that the returned value is of the same type as the argument value passed to the sanitizer.
 For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATETIME value shoud be returned as well.
-
 
 
 #### Configuration method resolution order
@@ -71,10 +70,10 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 
 1. Warn about unhandled fields
 2. Creates a database dump (`mysqldump`/`pgdump`)
-3. Run sanitazier
+3. Run sanitizer
 
 
-#### Check Sanitize Dump
+#### Check Sanitized Dump
 
 `./manage.py sanitized_dump -c`
 
