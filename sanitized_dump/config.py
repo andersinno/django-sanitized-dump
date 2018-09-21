@@ -1,9 +1,11 @@
 import os
+import sys
 from collections import defaultdict
 
 import yaml
 from django.conf import settings
 
+from .utils.compat import deunicode
 from .utils.models import get_db_tables_and_columns_of_model, get_models
 
 # TODO: Figure out a way to get the dir where manage.py is without BASE_DIR
@@ -101,5 +103,11 @@ class Configuration(object):
             self.config['strategy'][table] = dict.fromkeys(columns)
 
     def write_configuration_file(self, file_path=standard_file_path):
+        if sys.version_info[0] >= 3:
+            config_data = self.config
+        else:
+            # deunicode config to avoid serializing unicode objects
+            # into the yaml file.
+            config_data = deunicode(self.config)
         with open(file_path, "w") as config_file:
-            yaml.dump(self.config, config_file, default_flow_style=False)
+            yaml.dump(config_data, config_file, default_flow_style=False)

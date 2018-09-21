@@ -53,6 +53,14 @@ class TestConfiguration(object):
             conf = Configuration(yaml.load(conf_file))
             assert conf.in_sync_with_models
 
+    @patch(builtins_open, new_callable=MockOpen)
+    def test_configuration_file_unicode_formatting(self, mocked_open):
+        config = Configuration.from_models()
+        config.write_configuration_file()
+        with open(Configuration().standard_file_path, 'r') as conf_file:
+            contents = conf_file.read()
+            assert '!!python/unicode' not in contents
+
     def test_empty_config_is_not_valid(self):
         Configuration({}).validate()
 
