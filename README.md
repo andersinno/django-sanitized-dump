@@ -1,11 +1,25 @@
 # django-sanitized-dump
 Sanitize sensitive information from your database dumps 💩
 
+Supports:
+- PostgreSQL
+- MySQL
 
-# DB Sanitization
+# Getting started
+
+1. `pip install django-sanitized-dump`
+2. Add `sanitized_dump` to `INSTALLED_APPS`
+3. Initialize config file: `./manage.py init_sanitizer`
+4. Check your newly created `.sanitizerconfig` file and modify the sanitation strategy to fit your requirements.
+5. Sanitize your database dump: `./manage.py sanitized_dump -c > dump.sql`
+
+# DB Sanitation
+
+Heavy lifting of the DB sanitation is done by: https://github.com/andersinno/python-database-sanitizer
 
 ### Configuration
 
+Configuration file is used to define a strategy on how to sanitize your data. Strategy defines a sanitation function for each model field.
 
 #### Example config
 ```yaml
@@ -48,7 +62,7 @@ def sanitize_schoo(value):
 
 #### Validating sanitizer return value
 
-> Note: This should not be done in the initial implementation of the sanitizer but is up to the sanitizer funtions. This is just a nice to have but not of a high priority.
+> Note: This should not be done in the initial implementation of the sanitizer but is up to the sanitizer functions. This is just a nice to have but not of a high priority.
 
 Check that the returned value is of the same type as the argument value passed to the sanitizer.
 For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATETIME value shoud be returned as well.
@@ -59,8 +73,6 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 1. Custom sanitizers inside ./sanitizers
 2. Addon sanitizers (`config.addons`)
 3. Core sanitizers
-
-
 
 ### Django Management Commands
 
@@ -78,6 +90,9 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 `./manage.py sanitized_dump -c`
 
 1. Returns an error code if there are unhandled database fields
+
+Check can be used in CI environments for detecting changes in models, that are not present in
+sanitizer configuration.
 
 
 #### Init Sanitizer
