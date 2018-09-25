@@ -11,7 +11,7 @@ Supports:
 2. Add `sanitized_dump` to `INSTALLED_APPS`
 3. Initialize config file: `./manage.py init_sanitizer`
 4. Check your newly created `.sanitizerconfig` file and modify the sanitation strategy to fit your requirements.
-5. Sanitize your database dump: `./manage.py sanitized_dump -c > dump.sql`
+5. Get sanitized database dump: `./manage.py sanitized_dump -c > dump.sql`
 
 # DB Sanitation
 
