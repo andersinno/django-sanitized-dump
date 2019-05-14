@@ -7,11 +7,12 @@ Supports:
 
 # Getting started
 
-1. `pip install django-sanitized-dump`
+1. `pip install django-sanitized-dump` or `pip install django-sanitized-dump[MySQL]` if you use MySQL
 2. Add `sanitized_dump` to `INSTALLED_APPS`
 3. Initialize config file: `./manage.py init_sanitizer`
 4. Check your newly created `.sanitizerconfig` file and modify the sanitation strategy to fit your requirements.
-5. Get sanitized database dump: `./manage.py sanitized_dump -c > dump.sql`
+5. Run `./manage.py check_sanitizerconfig` to verify that your `.sanitizerconfig` includes all models and fields
+6. Get sanitized database dump: `./manage.py create_sanitized_dump > dump.sql`
 
 # DB Sanitation
 
@@ -41,6 +42,15 @@ strategy:
    credits: null
    information: "string.loremipsum_preserved"
  file_file: null
+```
+
+**Note:** In Py2 environments you need to use `!!python/unicode` yaml tag to have the
+sanitizer config values properly converted into `unicode` objects. So e.g.:
+
+```YAML
+strategy:
+  user:
+    first_name: !!python/unicode name.first_name
 ```
 
 #### Example custom sanitizers
@@ -78,7 +88,7 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 
 #### Sanitized Dump
 
-`./manage.py sanitized_dump -c > dump.sql`
+`./manage.py create_sanitized_dump > dump.sql`
 
 1. Warn about unhandled fields
 2. Creates a database dump (`mysqldump`/`pgdump`)
@@ -87,7 +97,7 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 
 #### Check Sanitized Dump
 
-`./manage.py sanitized_dump -c`
+`./manage.py check_sanitizerconfig`
 
 1. Returns an error code if there are unhandled database fields
 
