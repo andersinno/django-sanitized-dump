@@ -11,7 +11,8 @@ Supports:
 2. Add `sanitized_dump` to `INSTALLED_APPS`
 3. Initialize config file: `./manage.py init_sanitizer`
 4. Check your newly created `.sanitizerconfig` file and modify the sanitation strategy to fit your requirements.
-5. Get sanitized database dump: `./manage.py sanitized_dump -c > dump.sql`
+5. Run `./manage.py check_sanitizerconfig` to verify that your `.sanitizerconfig` includes all models and fields
+6. Get sanitized database dump: `./manage.py create_sanitized_dump > dump.sql`
 
 # DB Sanitation
 
@@ -78,7 +79,7 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 
 #### Sanitized Dump
 
-`./manage.py sanitized_dump -c > dump.sql`
+`./manage.py create_sanitized_dump > dump.sql`
 
 1. Warn about unhandled fields
 2. Creates a database dump (`mysqldump`/`pgdump`)
@@ -87,7 +88,7 @@ For instance, if a MySQL DATETIME value is passed to the sanitizer, a MySQL DATE
 
 #### Check Sanitized Dump
 
-`./manage.py sanitized_dump -c`
+`./manage.py check_sanitizerconfig`
 
 1. Returns an error code if there are unhandled database fields
 
