@@ -44,6 +44,15 @@ strategy:
  file_file: null
 ```
 
+**Note:** In Py2 environments you need to use `!!python/unicode` yaml tag to have the
+sanitizer config values properly converted into `unicode` objects. So e.g.:
+
+```YAML
+strategy:
+  user:
+    first_name: !!python/unicode name.first_name
+```
+
 #### Example custom sanitizers
 ```python
 # /sanitizers/name.py
