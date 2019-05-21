@@ -12,4 +12,4 @@ pep8-naming==0.8.2
 pycodestyle==2.5.0        # via flake8, flake8-print
 pyflakes==2.1.1           # via flake8
 six==1.12.0               # via flake8-print
-testfixtures==5.4.0       # via flake8-isort
+testfixtures==6.8.2       # via flake8-isort
