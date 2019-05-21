@@ -12,5 +12,5 @@ pycodestyle==2.5.0
 pytz==2019.1              # via django
 pyyaml==5.1
 six==1.12.0               # via mock, tox
-tox==2.9.1
+tox==3.11.1
 virtualenv==15.1.0        # via tox
