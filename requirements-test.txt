@@ -2,7 +2,7 @@
 #
 #   prequ update
 #
-attrs==17.4.0             # via pytest
+attrs==19.1.0             # via pytest
 colorama==0.3.9           # via pytest
 coverage==4.5.1           # via pytest-cov
 mock==3.0.5
