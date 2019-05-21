@@ -10,7 +10,7 @@ pluggy==0.11.0             # via tox
 py==1.8.0                 # via tox
 pycodestyle==2.5.0
 pytz==2019.1              # via django
-pyyaml==3.12
+pyyaml==5.1
 six==1.11.0               # via mock, tox
 tox==2.9.1
 virtualenv==15.1.0        # via tox
