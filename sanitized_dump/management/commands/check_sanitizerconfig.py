@@ -26,6 +26,6 @@ class Command(DBReadonlyCommand):
                     'conf_file': Configuration.standard_file_name,
                 }))
 
-        self.stderr.write('OUT OF SYNC: {} is not up to date with your models.'.format(
+        raise SystemExit('OUT OF SYNC: {} is not up to date with your models.'.format(
             Configuration.standard_file_name
         ))

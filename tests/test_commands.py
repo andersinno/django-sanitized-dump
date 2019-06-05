@@ -1,3 +1,5 @@
+import pytest
+
 from django.core.management import call_command
 from mock import patch
 from mock_open import MockOpen
@@ -24,8 +26,9 @@ def test_check_sanitizerconfig(mocked_open):
     """
     output = StringIO()
     err = StringIO()
-    call_command('check_sanitizerconfig', stderr=err, stdout=output)
-    assert 'OUT OF SYNC' in err.getvalue()
+    with pytest.raises(SystemExit) as e:
+        call_command('check_sanitizerconfig', stderr=err, stdout=output)
+        assert 'OUT OF SYNC' in str(e)
     assert 'IN SYNC' not in output.getvalue()
 
     output = StringIO()
