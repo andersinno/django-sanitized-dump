@@ -1,3 +1,8 @@
+try:
+    from ConfigParser import SafeConfigParser
+except ImportError:  # pragma: no cover python 2 vs 3 issue
+    from configparser import ConfigParser as SafeConfigParser
+
 DATABASE_TYPES = ['mysql', 'postgres', 'postgis']
 
 
@@ -9,6 +14,17 @@ def get_database_engine_from_django_database(django_database):
             engine = entry
             break
     return engine
+
+
+def read_mysql_options_from_path(path):
+    options = SafeConfigParser()
+    options.read(path)
+    keys = ["user", "password", "host", "port", "database"]
+    result = {}
+    for key in keys:
+        if options.has_option("client", key):
+            result[key] = options.get("client", key)
+    return result
 
 
 class DatabaseUrlBuilder(object):
@@ -56,6 +72,12 @@ class DatabaseUrlBuilder(object):
             "port": django_database.get("PORT"),
             "database": django_database.get("NAME"),
         }
+
+        if engine == "mysql":
+            options = django_database.get("OPTIONS", {})
+            options_path = options.get("read_default_file", None)
+            if options_path:
+                kwargs.update(read_mysql_options_from_path(options_path))
 
         return cls(**kwargs)
 

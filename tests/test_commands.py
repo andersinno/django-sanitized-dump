@@ -1,5 +1,4 @@
 import pytest
-
 from django.core.management import call_command
 from mock import patch
 from mock_open import MockOpen
