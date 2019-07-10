@@ -38,7 +38,7 @@ class DatabaseUrlBuilder(object):
         self.database = database
 
     def to_string(self):
-        if not all([self.engine, self.database, self.host]):
+        if not all([self.engine, self.database]):
             raise ValueError("Database configuration not supported")
 
         has_login = (self.user or self.password)
@@ -68,7 +68,7 @@ class DatabaseUrlBuilder(object):
             "engine": engine,
             "user": django_database.get("USER"),
             "password": django_database.get("PASSWORD"),
-            "host": django_database.get("HOST", None) or "localhost",
+            "host": django_database.get("HOST") or "",
             "port": django_database.get("PORT"),
             "database": django_database.get("NAME"),
         }
@@ -78,6 +78,10 @@ class DatabaseUrlBuilder(object):
             options_path = options.get("read_default_file", None)
             if options_path:
                 kwargs.update(read_mysql_options_from_path(options_path))
+
+        if kwargs["port"] and not kwargs["host"]:
+            # Port doesn't make sense without a hostname
+            kwargs["host"] = "localhost"
 
         return cls(**kwargs)
 
