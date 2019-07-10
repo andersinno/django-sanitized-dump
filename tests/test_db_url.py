@@ -11,13 +11,15 @@ from sanitized_dump.utils.db import db_setting_to_db_string
     ("django.db.backends.mysql", "db", "user", "password", "host", "3307",
         "mysql://user:password@host:3307/db"),
     ("django.db.backends.mysql", "db", "user", "password", None, None,
-        "mysql://user:password@localhost/db"),
+        "mysql://user:password@/db"),
     ("django.db.backends.postgresql", "db", "user", "password", None, None,
-        "postgres://user:password@localhost/db"),
+        "postgres://user:password@/db"),
     ("django.db.backends.postgresql", "db", "user", "password", None, 1111,
         "postgres://user:password@localhost:1111/db"),
     ("django.contrib.gis.db.backends.postgis", "johannes", "hernekeitto", "viina", "teline", 1111,
         "postgis://hernekeitto:viina@teline:1111/johannes"),
+    ("django.db.backends.postgresql", "baredb", None, None, None, None,
+        "postgres:///baredb"),
 ])
 def test_db_url_generation(engine, name, user, password, host, port, expected):
     databases = {
@@ -38,7 +40,7 @@ def test_db_url_generation(engine, name, user, password, host, port, expected):
 @pytest.mark.parametrize("database, user, password, host, port, expected", [
     ("db", "user", "password", "host", 3306, "mysql://user:password@host:3306/db"),
     ("db", "user", "password", "host", 3307, "mysql://user:password@host:3307/db"),
-    ("db", "user", "password", None, None, "mysql://user:password@localhost/db"),
+    ("db", "user", "password", None, None, "mysql://user:password@/db"),
     ("db", "user", "password", None, 5432, "mysql://user:password@localhost:5432/db"),
     ("db", "user", "password", None, 1111, "mysql://user:password@localhost:1111/db"),
     ("johannes", "hernekeitto", "viina", "teline", 1111, "mysql://hernekeitto:viina@teline:1111/johannes"),
