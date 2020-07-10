@@ -20,6 +20,9 @@ from sanitized_dump.utils.db import db_setting_to_db_string
         "postgis://hernekeitto:viina@teline:1111/johannes"),
     ("django.db.backends.postgresql", "baredb", None, None, None, None,
         "postgres:///baredb"),
+    ("django.db.backends.postgresql", "db", "user@userhost.tld", " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", "host", 1111,
+        "postgres://user%40userhost.tld:%20%21%22%23%24%25%26%27%28%29%2A%2B%2C"
+        "-.%2F%3A%3B%3C%3D%3E%3F%40%5B%5C%5D%5E_%60%7B%7C%7D%7E@host:1111/db"),
 ])
 def test_db_url_generation(engine, name, user, password, host, port, expected):
     databases = {

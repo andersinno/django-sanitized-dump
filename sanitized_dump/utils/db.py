@@ -1,3 +1,4 @@
+from six.moves.urllib import parse as urlparse
 try:
     from ConfigParser import SafeConfigParser
 except ImportError:  # pragma: no cover python 2 vs 3 issue
@@ -41,7 +42,15 @@ class DatabaseUrlBuilder(object):
         if not all([self.engine, self.database]):
             raise ValueError("Database configuration not supported")
 
-        has_login = (self.user or self.password)
+        user = self.user
+        password = self.password
+        has_login = (user or password)
+
+        if has_login:
+            # Escape unsafe characters in URL. These are common in
+            # strong passwords and when username is an email address.
+            user = urlparse.quote(user, safe='')
+            password = urlparse.quote(password, safe='')
 
         login_part = '{user}:{password}@' if has_login else ''
         port_part = ':{port}' if self.port else ''
@@ -51,8 +60,8 @@ class DatabaseUrlBuilder(object):
 
         return database_string_template.format(
             engine=self.engine,
-            user=self.user,
-            password=self.password,
+            user=user,
+            password=password,
             host=self.host,
             port=self.port,
             db=self.database,
