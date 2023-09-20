@@ -35,7 +35,7 @@ class Configuration(object):
 
     @classmethod
     def from_file(cls, file):
-        conf = Configuration(yaml.load(file))
+        conf = Configuration(yaml.safe_load(file))
         conf.validate()
         return conf
 
